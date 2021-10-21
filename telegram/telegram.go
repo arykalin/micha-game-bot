@@ -15,7 +15,6 @@ type teleBot struct {
 }
 
 type TeleBot interface {
-	SendMessage(text string) error
 	Start() error
 }
 
@@ -47,14 +46,6 @@ func (t teleBot) Start() error {
 			t.logger.Errorf("failed to send message: %w", err)
 		}
 		t.logger.Debugf("message sent: %+v", send)
-	}
-	return nil
-}
-func (t *teleBot) SendMessage(text string) error {
-	msg := tgbotapi.NewMessage(t.chatID, text)
-	_, err := t.bot.Send(msg)
-	if err != nil {
-		return err
 	}
 	return nil
 }
