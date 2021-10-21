@@ -32,20 +32,18 @@ func (t teleBot) Start() error {
 			continue
 		}
 
-		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+		t.logger.Infof("[%s] %s chat id: %d message id: %d",
+			update.Message.From.UserName, update.Message.Text,
+			update.Message.Chat.ID, update.Message.MessageID)
 
-		text := fmt.Sprintf("%s %s @%s: %s",
-			update.Message.From.FirstName,
-			update.Message.From.LastName,
-			update.Message.From.UserName,
-			update.Message.Text)
-		msg := tgbotapi.NewMessage(t.chatID, text)
+		msg := tgbotapi.NewForward(t.chatID, update.Message.Chat.ID, update.Message.MessageID)
 
 		send, err := t.bot.Send(msg)
 		if err != nil {
 			t.logger.Errorf("failed to send message: %w", err)
+		} else {
+			t.logger.Debugf("message sent: %+v", send)
 		}
-		t.logger.Debugf("message sent: %+v", send)
 	}
 	return nil
 }
